@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Rose &amp; Saveurs — Pâtisserie artisanale, Alger</title>
+    <meta name="description" content="Rose &amp; Saveurs, artisan pâtisserie in Algiers. Bûchettes, tartes, cookies and cheesecake made to order, plus custom cakes. Build your basket and order on WhatsApp." />
+    <meta name="theme-color" content="#3B0A33" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Rose &amp; Saveurs" />
+    <meta property="og:title" content="Rose &amp; Saveurs — Pâtisserie artisanale, Alger" />
+    <meta property="og:description" content="Douceurs qui font plaisir. Artisan pâtisserie in Algiers, made to order. Order on WhatsApp." />
+    <meta property="og:image" content="/brand/logo.jpg" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Rose &amp; Saveurs — Pâtisserie artisanale, Alger" />
+    <meta name="twitter:description" content="Douceurs qui font plaisir. Artisan pâtisserie in Algiers, made to order." />
+    <meta name="twitter:image" content="/brand/logo.jpg" />
+
+    <!-- Apply the saved or system theme before first paint, to avoid a flash. -->
+    <script>
+      (function () {
+        var theme = 'light';
+        try {
+          var stored = localStorage.getItem('rs-theme');
+          if (stored === 'dark' || stored === 'light') theme = stored;
+          else if (window.matchMedia('(prefers-color-scheme: dark)').matches) theme = 'dark';
+        } catch (e) {
+          if (window.matchMedia('(prefers-color-scheme: dark)').matches) theme = 'dark';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+
+    <link rel="preload" href="/node_modules/@fontsource/fraunces/files/fraunces-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/node_modules/@fontsource/jost/files/jost-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Bakery",
+        "name": "Rose & Saveurs",
+        "description": "Pâtisserie artisanale · Alger · Sur commande",
+        "telephone": "+213793725077",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Les Sources, Bir Mourad Rais",
+          "addressLocality": "Alger",
+          "addressCountry": "DZ"
+        },
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+          "opens": "09:00",
+          "closes": "22:00"
+        },
+        "sameAs": ["https://www.instagram.com/rose_et_saveurs/", "https://www.tiktok.com/@rose_et_saveurs"]
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
