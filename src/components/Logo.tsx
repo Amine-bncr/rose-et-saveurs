@@ -24,9 +24,9 @@ interface LogoProps {
 export function Logo({ variant, className = '' }: LogoProps) {
   if (variant === 'lockup') {
     return (
-      <span className={`inline-flex items-center gap-2.5 text-gold ${className}`}>
+      <span className={`inline-flex items-center gap-2.5 text-accent ${className}`}>
         <HeartLoop className="h-7 w-7" />
-        <span className="font-body text-[0.8rem] font-medium uppercase text-cream" style={{ letterSpacing: '0.26em' }}>
+        <span className="font-body text-[0.8rem] font-medium uppercase text-fg" style={{ letterSpacing: '0.26em' }}>
           Rose &amp; Saveurs
         </span>
       </span>

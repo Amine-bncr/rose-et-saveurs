@@ -11,10 +11,10 @@ export interface PhotoMeta {
   zoom?: number;
 }
 
-const propCrop = { focus: { x: 50, y: 72 }, zoom: 1.3 } as const;
-const centre = { x: 50, y: 50 } as const;
+const propCrop = { focus: { x: 50, y: 72 }, zoom: 1.3 };
+const centre = { x: 50, y: 50 };
 
-export const PHOTOS = {
+export const PHOTOS: Record<string, PhotoMeta> = {
   IMG_2968: { alt: 'A gold-dusted chocolate bûchette beside its two cut halves on a blush marble surface', focus: centre },
   IMG_9116: { alt: 'A tiramisu bûchette cut open to show its layers', focus: centre },
   IMG_9103: { alt: 'A whole tiramisu bûchette on a blush marble surface', focus: centre },
@@ -34,13 +34,14 @@ export const PHOTOS = {
   IMG_9011: { alt: 'A cheesecake photographed from a second angle', focus: centre },
   IMG_9352: { alt: 'A slice of cake, photographed at an angle', focus: centre },
   IMG_9117: { alt: 'A tiramisu bûchette cut open, second view', focus: centre },
-} as const satisfies Record<string, PhotoMeta>;
+};
 
-export type PhotoKey = keyof typeof PHOTOS;
+/** A photo's file name without extension, e.g. 'IMG_9738'. Photos not listed above still work. */
+export type PhotoKey = string;
 
 export const HERO_KEY: PhotoKey = 'IMG_2968';
-/** The `sizes` attribute of the hero photo; also used by the HTML preload. */
-export const HERO_SIZES = '(min-width: 1024px) 440px, 80vw';
+/** The `sizes` attribute of the hero photo (full width); also used by the HTML preload. */
+export const HERO_SIZES = '100vw';
 
 /** Gallery order. IMG_9854 (the collage) is deliberately absent. */
 export const GALLERY_KEYS: PhotoKey[] = [

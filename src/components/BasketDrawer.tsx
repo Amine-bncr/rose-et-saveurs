@@ -7,7 +7,7 @@ import { useBasket } from '../lib/basketContext';
 import { useDialog } from '../lib/useDialog';
 import { buildOrderMessage, whatsappUrl, type OrderDetails } from '../lib/whatsapp';
 import { ArabicText, Darija } from './ArabicText';
-import { ArchFrame } from './ArchFrame';
+import { Frame } from './Frame';
 import { Field, describedBy } from './Field';
 import { CloseIcon, MinusIcon, PlusIcon, TrashIcon, WhatsAppIcon } from './Icons';
 import { Photo } from './Photo';
@@ -128,9 +128,9 @@ export default function BasketDrawer() {
               <ul role="list" className="divide-y divide-hairline/25">
                 {lines.map((line) => (
                   <li key={line.key} className="flex items-center gap-3 py-3">
-                    <ArchFrame variant="thumb" className="w-14 shrink-0">
-                      <Photo photoKey={line.item.photo} sizes="56px" />
-                    </ArchFrame>
+                    <Frame square className="w-14 shrink-0 !rounded-2xl">
+                      <Photo photoKey={line.item.photo} sizes="56px" cutout fallbackAlt={line.name} />
+                    </Frame>
                     <div className="min-w-0 flex-1">
                       <p className="font-display text-lg leading-tight">{line.name}</p>
                       <div className="mt-1 text-sm text-fg-muted">{line.lineTotal === null ? <Price price={null} /> : formatPrice(line.lineTotal)}</div>
@@ -176,7 +176,7 @@ export default function BasketDrawer() {
                   <legend className="mb-1.5 text-sm font-medium">Pickup or delivery</legend>
                   <div className="grid grid-cols-2 gap-2">
                     {(['pickup', 'delivery'] as const).map((mode) => (
-                      <label key={mode} className={`flex min-h-11 cursor-pointer items-center justify-center rounded-xl border px-3 text-sm font-medium ${order.mode === mode ? 'border-velvet bg-velvet text-cream dark:border-gold dark:bg-gold dark:text-velvet' : 'border-hairline/60'}`}>
+                      <label key={mode} className={`flex min-h-11 cursor-pointer items-center justify-center rounded-xl border px-3 text-sm font-medium ${order.mode === mode ? 'border-plum bg-plum text-cream dark:border-gold dark:bg-gold dark:text-velvet' : 'border-hairline/60'}`}>
                         <input type="radio" name="mode" value={mode} className="sr-only" checked={order.mode === mode} onChange={() => update('mode', mode)} />
                         {mode === 'pickup' ? 'Pickup' : 'Delivery'}
                       </label>

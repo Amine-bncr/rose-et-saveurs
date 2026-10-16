@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { PhotoKey } from '../data/photos';
 import { useInView, usePrefersReducedMotion } from '../lib/useInView';
-import { ArchFrame } from './ArchFrame';
 import { Photo } from './Photo';
 
 interface CutRevealProps {
@@ -13,8 +12,8 @@ interface CutRevealProps {
 const SIZES = '(min-width: 1024px) 260px, (min-width: 640px) 40vw, 70vw';
 
 /**
- * Shows the exterior first. A gold knife line wipes across to reveal the cut-open photo on tap,
- * hover, and once automatically when scrolled into view. Reduced motion: a plain tap-to-toggle.
+ * Shows the exterior first. A thin gold knife line wipes across to reveal the cut-open photo on
+ * tap, hover, and once automatically when scrolled into view. Reduced motion: plain tap-to-toggle.
  */
 export function CutReveal({ exterior, cut, name }: CutRevealProps) {
   const [ref, inView] = useInView<HTMLButtonElement>({ threshold: 0.6 });
@@ -61,16 +60,14 @@ export function CutReveal({ exterior, cut, name }: CutRevealProps) {
         setOpen(false);
       }}
     >
-      <ArchFrame>
-        <div className="relative h-full w-full">
-          <Photo photoKey={exterior} sizes={SIZES} />
-          <div className="cut-layer absolute inset-0">
-            <Photo photoKey={cut} sizes={SIZES} />
-          </div>
-          <span className="knife" aria-hidden="true" />
+      <div className="relative aspect-square w-full">
+        <Photo photoKey={exterior} sizes={SIZES} cutout fallbackAlt={name} />
+        <div className="cut-layer absolute inset-0 bg-blob">
+          <Photo photoKey={cut} sizes={SIZES} cutout fallbackAlt={`${name}, cut open`} />
         </div>
-      </ArchFrame>
-      <span className="label mt-3 inline-block text-fg-muted" aria-hidden="true">
+        <span className="knife" aria-hidden="true" />
+      </div>
+      <span className="label mt-2 inline-block text-fg-muted" aria-hidden="true">
         {open ? 'Tap to close' : 'Tap to cut'}
       </span>
     </button>

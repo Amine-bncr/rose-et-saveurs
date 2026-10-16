@@ -36,7 +36,7 @@ export function Menu() {
   }, [active]);
 
   return (
-    <section id="menu" aria-labelledby="menu-title" className="bg-surface pt-20">
+    <section id="menu" aria-labelledby="menu-title" className="torn-top relative bg-surface pt-24">
       <div className="mx-auto max-w-6xl px-5">
         <SectionHeading
           id="menu-title"
@@ -51,14 +51,14 @@ export function Menu() {
         </SectionHeading>
       </div>
 
-      <div className="sticky top-16 z-30 border-y border-hairline/25 bg-surface/95 backdrop-blur">
+      <div className="sticky top-16 z-30 border-b border-hairline/25 bg-surface pt-4">
         <nav aria-label="Menu categories" ref={stripRef} className="no-scrollbar mx-auto flex max-w-6xl gap-2 overflow-x-auto px-4 py-2">
           {CATEGORIES.map((category) => (
             <a
               key={category.id}
               href={`#cat-${category.id}`}
               aria-current={active === category.id ? 'true' : undefined}
-              className="label inline-flex min-h-11 shrink-0 items-center rounded-full border border-transparent px-4 text-fg-muted hover:text-fg aria-[current=true]:border-hairline aria-[current=true]:bg-velvet aria-[current=true]:text-cream dark:aria-[current=true]:bg-gold dark:aria-[current=true]:text-velvet"
+              className="label inline-flex min-h-11 shrink-0 items-center rounded-full border border-transparent px-4 text-fg-muted hover:text-fg aria-[current=true]:border-hairline aria-[current=true]:bg-plum aria-[current=true]:text-cream dark:aria-[current=true]:bg-gold dark:aria-[current=true]:text-velvet"
             >
               {category.label}
             </a>
@@ -68,11 +68,11 @@ export function Menu() {
 
       <div className="mx-auto max-w-6xl space-y-14 px-5 py-12">
         {CATEGORIES.map((category) => (
-          <section key={category.id} id={`cat-${category.id}`} aria-labelledby={`cat-title-${category.id}`} className="scroll-mt-36">
+          <section key={category.id} id={`cat-${category.id}`} aria-labelledby={`cat-title-${category.id}`} className="scroll-mt-40">
             <h3 id={`cat-title-${category.id}`} className="mb-5 text-3xl">
               {category.label}
             </h3>
-            <ul role="list" className="grid gap-3 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
+            <ul role="list" className="blob-list grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
               {MENU.filter((item) => item.category === category.id).map((item, index) => (
                 <li key={item.id}>
                   <Reveal delay={(index % 3) * 70}>

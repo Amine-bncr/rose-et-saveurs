@@ -33,13 +33,13 @@ export function AddControl({ item, align = 'between' }: { item: MenuItem; align?
           ))}
         </div>
       )}
-      <div className={`flex items-center gap-3 ${align === 'center' ? 'justify-center' : 'justify-between'}`}>
+      <div className={`flex flex-wrap items-center gap-x-3 gap-y-2 ${align === 'center' ? 'justify-center' : 'justify-between'}`}>
         <Price price={price} />
         {qty === 0 ? (
           <button
             ref={buttonRef}
             type="button"
-            className="btn-solid min-w-[6.5rem]"
+            className="btn-solid min-w-[5.5rem] px-5"
             aria-label={`Add ${item.name} to basket`}
             onClick={() => {
               if (buttonRef.current) flyToBasket(buttonRef.current);

@@ -8,7 +8,7 @@ export function ThemeToggle() {
   return (
     <button
       type="button"
-      className="grid h-11 w-11 place-items-center rounded-full text-cream hover:bg-plum/60"
+      className="grid h-11 w-11 place-items-center rounded-full text-fg hover:bg-surface-alt"
       aria-label={`Switch to ${next} mode`}
       onClick={() => {
         applyTheme(next);

@@ -24,7 +24,7 @@ Then run:
 npm run assets
 ```
 
-It converts HEIC, applies EXIF rotation, writes AVIF + WebP at 480/800/1200 px to `public/photos/`, writes the logo variants to `public/brand/`, removes stale outputs, and regenerates `src/data/photo-manifest.json` and `brand-manifest.json`. It is safe to re-run whenever files change, and it also works when the folders are empty (the site shows arch-and-pattern placeholders and an inline lockup instead). It prints the aubergine and gold sampled from the logo next to the target values. `IMG_9854*` (the collage) and any file with "screenshot" in its name are skipped. Commit the generated `public/photos` and `public/brand` so Netlify does not need the originals.
+It converts HEIC, applies EXIF rotation, **removes the background of each photo locally** (the model ships inside the `@imgly/background-removal-node` package, no internet or account needed; the first run takes a few seconds per photo, later runs skip photos that have not changed), writes AVIF + WebP at 480/800/1200 px to `public/photos/`, writes the logo variants to `public/brand/`, removes stale outputs, and regenerates `src/data/photo-manifest.json` and `brand-manifest.json`. It is safe to re-run whenever files change, and it also works when the folders are empty (the site shows arch-and-pattern placeholders and an inline lockup instead). It prints the aubergine and gold sampled from the logo next to the target values. `IMG_9854*` (the collage) and any file with "screenshot" in its name are skipped. Commit the generated `public/photos` and `public/brand` so Netlify does not need the originals.
 
 To use a photo, add it to `PHOTOS` in `src/data/photos.ts` with its alt text and focal point (`focus` x/y in %, optional `zoom`), then reference its key from `src/data/menu.ts` or the gallery list. The four photos that contain the Christmas props (IMG_8924, 8943, 9441, 9477) are zoomed to push the props out of frame: check them visually and adjust `focus`/`zoom`, or drop the photo, if a prop still shows.
 
@@ -51,5 +51,6 @@ Connect the repository. `netlify.toml` already sets the build command (`npm run 
 
 `react`, `react-dom`, `vite`, `@vitejs/plugin-react`, `typescript`, `tailwindcss` + `@tailwindcss/vite` (the requested stack), `@fontsource/fraunces`, `@fontsource/jost`, `@fontsource/aref-ruqaa` (self-hosted fonts), `sharp` (image optimisation), plus:
 
+- `@imgly/background-removal-node` (dev) — cuts the background out of each photo for the product cards.
 - `heic-convert` (dev) — `sharp`'s prebuilt binaries cannot decode HEIC, and 18 of the photos are iPhone HEIC files.
 - `@types/react`, `@types/react-dom`, `@types/node` (dev) — types only.

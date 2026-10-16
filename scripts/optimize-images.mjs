@@ -1,6 +1,7 @@
 // Re-runnable asset pipeline:  npm run assets
 //
 //  source-assets/photos/*   (HEIC / JPG / PNG / WebP)  ->  public/photos/<key>.<hash>-<width>.(avif|webp)
+//                                                          public/photos/<key>.<hash>-cut-<width>.(avif|webp)  (background removed)
 //  source-assets/brand/logo.jpg                        ->  public/brand/logo.jpg (untouched copy)
 //                                                          public/brand/logo-<hash>-(400|800).webp + logo-<hash>-800.jpg
 //
@@ -13,6 +14,16 @@ import { copyFile, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promi
 import path from 'node:path';
 import sharp from 'sharp';
 import convert from 'heic-convert';
+import { keepMainSubject } from './keep-main-subject.mjs';
+
+// Background removal runs locally (the model ships inside the npm package, no internet needed).
+// If it cannot load, photos are still processed and the site falls back to the normal photo.
+let removeBackground = null;
+try {
+  ({ removeBackground } = await import('@imgly/background-removal-node'));
+} catch (error) {
+  console.warn(`cutout background removal unavailable (${error.message}); continuing without cut-outs.`);
+}
 
 const ROOT = process.cwd();
 const PHOTO_SRC = path.join(ROOT, 'source-assets', 'photos');
@@ -23,6 +34,7 @@ const PHOTO_MANIFEST = path.join(ROOT, 'src', 'data', 'photo-manifest.json');
 const BRAND_MANIFEST = path.join(ROOT, 'src', 'data', 'brand-manifest.json');
 
 const WIDTHS = [480, 800, 1200];
+const CUT_WIDTHS = [480, 800];
 const IMAGE_EXT = /\.(heic|heif|jpe?g|png|webp)$/i;
 // Files that must never reach the site: the pre-made collage and any Instagram screenshot.
 const EXCLUDE = [/^IMG_9854/i, /screenshot/i];
@@ -53,11 +65,56 @@ async function cleanDir(dir, keep) {
   }
 }
 
+
+/** Removes the background and writes transparent AVIF/WebP files. Returns manifest data, or null. */
+async function cutout(base, key, id, keep) {
+  if (!removeBackground) return null;
+  const metaName = `${key}.${id}-cut.json`;
+  const metaFile = path.join(PHOTO_OUT, metaName);
+  const fileNames = (widths) => widths.flatMap((w) => ['avif', 'webp'].map((format) => `${key}.${id}-cut-${w}.${format}`));
+
+  if (existsSync(metaFile)) {
+    const cached = JSON.parse(await readFile(metaFile, 'utf8'));
+    const names = fileNames(cached.widths);
+    if (names.every((name) => existsSync(path.join(PHOTO_OUT, name)))) {
+      keep.add(metaName);
+      names.forEach((name) => keep.add(name));
+      return cached;
+    }
+  }
+
+  try {
+    const input = await base.clone().resize({ width: 1200, withoutEnlargement: true }).jpeg({ quality: 92 }).toBuffer();
+    const blob = await removeBackground(new Blob([input], { type: 'image/jpeg' }), { output: { format: 'image/png' } });
+    // Trim the transparent margin so the subject fills its card.
+    const separated = await keepMainSubject(Buffer.from(await blob.arrayBuffer()));
+    const png = await sharp(separated).trim({ threshold: 5 }).toBuffer();
+    const { width, height } = await sharp(png).metadata();
+    const widths = CUT_WIDTHS.filter((w) => w <= width);
+    if (widths.length === 0) widths.push(width);
+    for (const w of widths) {
+      const resized = () => sharp(png).resize({ width: w, withoutEnlargement: true });
+      await resized().avif({ quality: 60, effort: 4 }).toFile(path.join(PHOTO_OUT, `${key}.${id}-cut-${w}.avif`));
+      await resized().webp({ quality: 85, alphaQuality: 92 }).toFile(path.join(PHOTO_OUT, `${key}.${id}-cut-${w}.webp`));
+    }
+    const largest = widths[widths.length - 1];
+    const data = { widths, width: largest, height: Math.round((height / width) * largest) };
+    await writeFile(metaFile, JSON.stringify(data));
+    keep.add(metaName);
+    fileNames(widths).forEach((name) => keep.add(name));
+    return data;
+  } catch (error) {
+    console.warn(`cutout ${key}: failed (${error.message}); the normal photo will be used.`);
+    return null;
+  }
+}
+
 async function photos() {
   await mkdir(PHOTO_OUT, { recursive: true });
   const files = await listFiles(PHOTO_SRC, (f) => IMAGE_EXT.test(f) && !EXCLUDE.some((re) => re.test(f)));
   const manifest = {};
   const keep = new Set();
+  let cutCount = 0;
 
   for (const file of files) {
     const key = path.parse(file).name.replace(/\s+/g, '_');
@@ -82,12 +139,19 @@ async function photos() {
     }
     const largest = widths[widths.length - 1];
     manifest[key] = { hash: id, width: largest, height: Math.round((srcHeight / srcWidth) * largest), widths };
-    console.log(`photo  ${key}  ${srcWidth}x${srcHeight}  -> ${widths.join('/')}px`);
+
+    const cut = await cutout(base, key, id, keep);
+    if (cut) {
+      manifest[key].cut = cut;
+      cutCount += 1;
+    }
+    console.log(`photo  ${key}  ${srcWidth}x${srcHeight}  -> ${widths.join('/')}px${cut ? '  + cut-out' : ''}`);
   }
 
   await cleanDir(PHOTO_OUT, keep);
   await writeFile(PHOTO_MANIFEST, JSON.stringify(manifest, null, 2) + '\n');
-  console.log(`${files.length} photo(s) processed.`);
+  console.log(`${files.length} photo(s) processed, ${cutCount} cut-out(s) ready.`);
+  if (files.length > cutCount) console.warn('Some photos have no cut-out (see messages above). They will show as normal rounded photos.');
 }
 
 async function sampleColours(buffer) {

@@ -16,16 +16,16 @@ const NAV = [
 function NavSheet({ onClose }: { onClose: () => void }) {
   const ref = useDialog(true, onClose);
   return (
-    <div ref={ref} role="dialog" aria-modal="true" aria-label="Site navigation" tabIndex={-1} className="nav-sheet on-velvet fixed inset-0 z-50 flex flex-col bg-velvet text-cream lg:hidden">
+    <div ref={ref} role="dialog" aria-modal="true" aria-label="Site navigation" tabIndex={-1} className="nav-sheet fixed inset-0 z-50 flex flex-col bg-surface text-fg lg:hidden">
       <div className="flex h-16 items-center justify-between px-4">
         <Logo variant="lockup" />
-        <button type="button" className="grid h-11 w-11 place-items-center rounded-full hover:bg-plum/60" aria-label="Close menu" onClick={onClose}>
+        <button type="button" className="grid h-11 w-11 place-items-center rounded-full hover:bg-surface-alt" aria-label="Close menu" onClick={onClose}>
           <CloseIcon />
         </button>
       </div>
       <nav aria-label="Mobile" className="flex flex-1 flex-col justify-center gap-2 px-8 pb-24">
         {NAV.map((link) => (
-          <a key={link.href} href={link.href} onClick={onClose} className="border-b border-gold/20 py-4 font-display text-4xl hover:text-gold">
+          <a key={link.href} href={link.href} onClick={onClose} className="border-b border-hairline/30 py-4 font-display text-4xl hover:text-accent">
             {link.label}
           </a>
         ))}
@@ -47,29 +47,29 @@ export function Header() {
   }, [pulse]);
 
   return (
-    <header className="on-velvet sticky top-0 z-40 h-16 border-b border-gold/20 bg-velvet text-cream">
+    <header className="torn-bottom sticky top-0 z-40 h-16 bg-surface text-fg">
       <div className="mx-auto flex h-full max-w-6xl items-center justify-between gap-3 px-4">
         <a href="#top" aria-label="Rose & Saveurs, back to top" className="rounded-md">
           <Logo variant="lockup" />
         </a>
         <nav aria-label="Primary" className="hidden items-center gap-8 lg:flex">
           {NAV.map((link) => (
-            <a key={link.href} href={link.href} className="label text-cream/90 hover:text-gold">
+            <a key={link.href} href={link.href} className="label text-fg hover:text-accent">
               {link.label}
             </a>
           ))}
         </nav>
         <div className="flex items-center gap-1">
           <ThemeToggle />
-          <button type="button" data-basket-target className={`relative grid h-11 w-11 place-items-center rounded-full hover:bg-plum/60 ${bounce ? 'basket-bounce' : ''}`} aria-label={`Open basket, ${count} ${count === 1 ? 'item' : 'items'}`} onClick={openDrawer}>
+          <button type="button" data-basket-target className={`relative grid h-11 w-11 place-items-center rounded-full hover:bg-surface-alt ${bounce ? 'basket-bounce' : ''}`} aria-label={`Open basket, ${count} ${count === 1 ? 'item' : 'items'}`} onClick={openDrawer}>
             <BasketIcon />
             {count > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-gold px-1 text-[0.7rem] font-semibold text-velvet" aria-hidden="true">
+              <span className="absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-plum px-1 text-[0.7rem] font-semibold text-cream dark:bg-gold dark:text-velvet" aria-hidden="true">
                 {count}
               </span>
             )}
           </button>
-          <button type="button" className="grid h-11 w-11 place-items-center rounded-full hover:bg-plum/60 lg:hidden" aria-label="Open menu" aria-haspopup="dialog" aria-expanded={navOpen} onClick={() => setNavOpen(true)}>
+          <button type="button" className="grid h-11 w-11 place-items-center rounded-full hover:bg-surface-alt lg:hidden" aria-label="Open menu" aria-haspopup="dialog" aria-expanded={navOpen} onClick={() => setNavOpen(true)}>
             <MenuIcon />
           </button>
         </div>

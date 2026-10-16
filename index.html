@@ -18,17 +18,13 @@
     <meta name="twitter:description" content="Douceurs qui font plaisir. Artisan pâtisserie in Algiers, made to order." />
     <meta name="twitter:image" content="/brand/logo.jpg" />
 
-    <!-- Apply the saved or system theme before first paint, to avoid a flash. -->
+    <!-- Light by default; apply the visitor's saved choice before first paint, to avoid a flash. -->
     <script>
       (function () {
         var theme = 'light';
         try {
-          var stored = localStorage.getItem('rs-theme');
-          if (stored === 'dark' || stored === 'light') theme = stored;
-          else if (window.matchMedia('(prefers-color-scheme: dark)').matches) theme = 'dark';
-        } catch (e) {
-          if (window.matchMedia('(prefers-color-scheme: dark)').matches) theme = 'dark';
-        }
+          if (localStorage.getItem('rs-theme-v2') === 'dark') theme = 'dark';
+        } catch (e) {}
         document.documentElement.setAttribute('data-theme', theme);
       })();
     </script>
@@ -42,7 +38,7 @@
         "@type": "Bakery",
         "name": "Rose & Saveurs",
         "description": "Pâtisserie artisanale · Alger · Sur commande",
-        "telephone": "+213793725077",
+        "telephone": "+213541363894",
         "address": {
           "@type": "PostalAddress",
           "streetAddress": "Les Sources, Bir Mourad Rais",
